@@ -1,0 +1,330 @@
+<div class="email-sender-container">
+  <div class="email-card">
+    <div class="email-header">
+      <div class="email-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+        </svg>
+      </div>
+      <h1 class="email-title">Send Bulk Email</h1>
+    </div>
+    <% if flash[:notice] %>
+		  <div class="alert alert-success" id="flash-message">
+		    <%= flash[:notice] %>
+		  </div>
+		<% end %>
+    
+    <%= form_with model: @email, local: true, class: "email-form" do |f| %>
+      <% if @email.errors.any? %>
+        <div class="error-container">
+          <div class="error-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" x2="12" y1="8" y2="12"></line>
+              <line x1="12" x2="12.01" y1="16" y2="16"></line>
+            </svg>
+          </div>
+          <div class="error-content">
+            <h3 class="error-title">Please correct the following errors:</h3>
+            <ul class="error-list">
+              <% @email.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <label class="form-label">Recipients</label>
+        <div class="form-description">Enter email addresses separated by commas</div>
+        <%= text_area_tag :recipients, "", rows: 5, class: "form-textarea", placeholder: "john@example.com, jane@example.com, ..." %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :subject, class: "form-label" %>
+        <%= f.text_field :subject, class: "form-input", placeholder: "Enter email subject" %>
+      </div>
+
+			<div class="form-group">
+			  <%= f.label :body, class: "form-label" %>
+			  <%= f.text_area :body, class: "ckeditor form-editor" %>
+
+			  <script>
+			    document.addEventListener("DOMContentLoaded", function () {
+			      if (document.getElementById("email_body")) {
+			        CKEDITOR.replace("email_body");
+			      }
+			    });
+			  </script>
+			</div>
+
+
+      <div class="form-group">
+        <label class="form-label">Attachment</label>
+        <div class="file-upload-container">
+          <div class="file-upload-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" x2="12" y1="3" y2="15"></line>
+            </svg>
+          </div>
+          <div class="file-upload-content">
+            <%= f.label :pdf, "Attach PDF", class: "file-upload-label" %>
+            <%= f.file_field :pdf, class: "file-upload-input" %>
+          </div>
+        </div>
+        <div id="file-name" class="file-name"></div>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Send Emails", class: "submit-button" %>
+      </div>
+    <% end %>
+    
+    <div class="email-footer">
+      <span>All emails are logged for compliance</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .email-sender-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .email-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+
+  .email-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: linear-gradient(to right, #f8f9fa, #f1f3f5);
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .email-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4263eb;
+  }
+
+  .email-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+  }
+
+  .email-form {
+    padding: 1.5rem;
+  }
+
+  .error-container {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: #fff5f5;
+    border: 1px solid #ffc9c9;
+    border-radius: 4px;
+    color: #e03131;
+  }
+
+  .error-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .error-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .error-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #badbcc;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #495057;
+  }
+
+  .form-description {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-input, .form-textarea {
+    display: block;
+    width: 100%;
+    padding: 0.625rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .form-input:focus, .form-textarea:focus {
+    border-color: #4263eb;
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+  }
+
+  .form-textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .form-editor {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    min-height: 200px;
+  }
+
+  .file-upload-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .file-upload-icon {
+    color: #4263eb;
+  }
+
+  .file-upload-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: #495057;
+  }
+
+  .file-upload-input {
+    display: block;
+    width: 100%;
+    font-size: 0.875rem;
+    color: #495057;
+  }
+
+  .file-name {
+    font-size: 0.875rem;
+    color: #495057;
+    margin-top: 0.5rem;
+  }
+
+  .form-actions {
+    margin-top: 2rem;
+  }
+
+  .submit-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    background-color: #4263eb;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+  }
+
+  .submit-button:hover {
+    background-color: #3b5bdb;
+  }
+
+  .submit-button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.4);
+  }
+
+  .email-footer {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-align: center;
+  }
+
+  /* Add a small script to show the file name when selected */
+  script {
+    display: none;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('input[type="file"]');
+    const fileNameDisplay = document.getElementById('file-name');
+    
+    if (fileInput && fileNameDisplay) {
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          fileNameDisplay.textContent = this.files[0].name;
+          fileNameDisplay.style.padding = '0.5rem';
+          fileNameDisplay.style.backgroundColor = '#e9ecef';
+          fileNameDisplay.style.borderRadius = '4px';
+          fileNameDisplay.style.display = 'inline-block';
+        } else {
+          fileNameDisplay.textContent = '';
+          fileNameDisplay.style.padding = '0';
+          fileNameDisplay.style.backgroundColor = 'transparent';
+        }
+      });
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const flash = document.getElementById("flash-message");
+    if (flash) {
+      setTimeout(() => flash.style.display = "none", 4000);
+    }
+  });
+</script>
