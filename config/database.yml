@@ -80,6 +80,4 @@ test:
 #
 production:
   <<: *default
-  database: bulk_mailer_production
-  username: bulk_mailer
-  password: <%= ENV["BULK_MAILER_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
