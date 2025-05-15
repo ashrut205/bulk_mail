@@ -12,8 +12,16 @@ class EmailsController < ApplicationController
     if @email.save
       @recipients.each_with_index do |recipient, index|
         smtp = SMTP_ACCOUNTS[index % SMTP_ACCOUNTS.size]
-
+        smtp_email = smtp[:user_name]
         pdf_file_path = @email.pdf.path
+
+
+        SentEmailLog.create!(
+          email: @email,
+          recipient: recipient,
+          smtp_email: smtp_email,
+          subject: @email.subject
+        )
 
         BulkEmailMailer.custom_email(
           to: recipient,
@@ -33,6 +41,6 @@ class EmailsController < ApplicationController
   private
 
   def email_params
-    params.require(:email).permit(:subject, :body, :pdf, :recipients)
+    params.require(:email).permit(:subject, :body, :pdf)
   end
 end

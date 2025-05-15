@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   # Health check (for uptime monitoring)
   get "up" => "rails/health#show", as: :rails_health_check
+  resources :sent_email_logs, only: [:index]
+
 
   # PWA manifest and service worker (if used)
   get "service-worker", to: "rails/pwa#service_worker", as: :pwa_service_worker

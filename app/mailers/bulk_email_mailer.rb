@@ -10,5 +10,4 @@ class BulkEmailMailer < ApplicationMailer
 	    format.html { render html: body.html_safe }
 	  end
 	end
-
 end
